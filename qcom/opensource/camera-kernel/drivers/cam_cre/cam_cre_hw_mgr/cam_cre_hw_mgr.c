@@ -1405,6 +1405,14 @@ static int cam_cre_mgr_process_io_cfg(struct cam_cre_hw_mgr *hw_mgr,
 				}
 			} else {
 				if (io_buf->fence != -1) {
+					if (k >= CAM_CTX_REQ_MAX) {
+						CAM_ERR(CAM_CRE,
+							"Couldn't update fence %d for out_res %d due to out_map_entries index %d greater than max %d",
+							io_buf->fence, io_buf->resource_type, k,
+							CAM_CTX_REQ_MAX);
+						rc = -EINVAL;
+						goto end;
+					}
 					prep_arg->out_map_entries[k].sync_id =
 						io_buf->fence;
 					k++;
